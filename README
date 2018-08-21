@@ -1,0 +1,89 @@
+Author: Brayden Roth-White
+email: brayden.roth-white@wsu.edu
+
+Author notes and how to start:
+    Django doesn't have a friendly method to use its model frameworks in production with an in memory database. The test
+    file creates an alias database that is destroyed once the tests are complete making it in memory. Currently,
+    starting the server with the intended '$python manage.py migrate' followed with '$python manage.py runserver' will
+    start the server but not connect a database properly to the endpoints. I couldn't find a work around to keep the
+    sqlite db in memory and still work cordially with the current structure. Changing the NAME of the default database
+    in settings.py from ':memory:' to the desired database path will connect everything as intended but will touch the
+    disk.
+
+    test.py is the only quick, reliable method I've found to work with an in memory database. Running the current test
+    cases with '$python manage.py test' will run any test case given. I've left in the 5 basic test cases for the 5
+    different endpoints that show the basic structure.
+
+    More information per function in docstrings alongside the function. Below are the endpoints' structure.
+
+
+Server Endpoint:
+    localhost:8000/
+
+Contact Enpoints:
+    GetContact:
+        Verb: GET
+        Path: /api/GetContact/{contact_id}/
+        Returns a single contact as a json object
+
+        Path Parameters:
+            contact_id: primary key associated with a contact
+
+    GetFullContactList:
+        Verb: GET
+        Path: /api/GetFullContactList/
+        Returns a list of contacts
+
+        Querystring Parameters:
+            names: comma separated list of case insensitive names
+            emails: comma separated list of case insensitive emails
+
+    CreateContact:
+        Verb: POST
+        Path: /api/CreateContact/
+        Creates a new contact added to the in-memory sqlite db
+
+        Request Body:
+            {
+                username: valid username of a superuser
+                password: valid password of the superuser
+                name: name of the contact to be created
+                phone_number: phone number of contact
+                physical_address: street address of the contact
+                city: city
+                state: 2 letter state code
+                email: email address
+                csrfmiddlewaretoken: csrf token
+            }
+
+    EditContact:
+        Verb: POST
+        Path: /api/EditContact/
+        Edits an existing contact
+
+        Request Body:
+            {
+                username: valid username of a superuser
+                password: valid password of the superuser
+                contact_id: primary key of the contact to be edited
+                name (optional): name of the contact to be created
+                phone_number (optional): phone number of contact
+                physical_address (optional): street address of the contact
+                city (optional): city
+                state (optional): 2 letter state code
+                email (optional): email address
+                csrfmiddlewaretoken: csrf token
+            }
+
+    DeleteContact:
+        Verb: POST
+        Path: /api/DeleteContact/
+        Deletes an existing contact
+
+        Request Body:
+            {
+                username: valid username of a superuser
+                password: valid password of the superuser
+                contact_id: primary key of the contact to be deleted
+                csrfmiddlewaretoken: csrf token
+            }
